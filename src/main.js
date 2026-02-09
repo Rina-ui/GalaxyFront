@@ -1,67 +1,72 @@
 import * as THREE from 'three';
 import './style.css';
-import {color, metalness, roughness} from "three/tsl";
+import { createVotingPlanets} from "../public/planets.js";
 
-//creation de la scene
+// Création de la scène
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000428);
+scene.background = new THREE.Color(0xcccccc);
 
-//la cam
+// La caméra
 const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
     1000
 );
+camera.position.z = 7;
 
-camera.position.z = 5;
-
-//le renderer
+// Le renderer
 const renderer = new THREE.WebGLRenderer({
     antialias: true,
 });
-
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+// Créer les 3 planètes
+const planets = createVotingPlanets();
 
-//creer la planete
-const geometry = new THREE.SphereGeometry(
-    1,
-    32,
-    32
-);
-
-const material = new THREE.MeshStandardMaterial({
-    color: 0x4a90e2,
-    roughness: 0.5,
-    metalness: 0.3
+// Ajouter chaque planète à la scène
+planets.forEach(planet => {
+    scene.add(planet);
 });
 
-const planet = new THREE.Mesh(
-    geometry,
-    material
-)
-
-scene.add(planet);
-
-const ambientLight = new THREE.AmbientLight(
-    0xffffff,
-    0.3
-)
-
+// Lumières
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(
-    0xffffff,
-    0.8
-);
-directionalLight.position.set(5, 5, 5);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+directionalLight.position.set(10, 15, 15);
 scene.add(directionalLight);
 
+//le raycatsing va permettre que lorsqu'on clique sur une planete qu;il y'ait une action
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
 
+function getMousePosition(event) {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+}
+
+function onMouseClick(event) {
+    getMousePosition(event);
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(planets);
+
+    if (intersects.length > 0) {
+        const clickedPlanet = intersects[0].object;
+        const planetIndex = planets.indexOf(clickedPlanet);
+    }
+}
+
+window.addEventListener('click', onMouseClick);
+
+// Animation
 function animate() {
     requestAnimationFrame(animate);
+    planets.forEach(planet => {
+        planet.rotation.y += 0.02;
+    });
+
     renderer.render(scene, camera);
 }
 
