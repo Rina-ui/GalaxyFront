@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import './style.css';
 import { createVotingPlanets} from "../public/planets.js";
+import { loadCharacter } from "./character.js"
 
 // Création de la scène
 const scene = new THREE.Scene();
@@ -37,6 +38,8 @@ scene.add(ambientLight);
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
 directionalLight.position.set(10, 15, 15);
 scene.add(directionalLight);
+
+loadCharacter(scene);
 
 //le raycatsing va permettre que lorsqu'on clique sur une planete qu;il y'ait une action
 const raycaster = new THREE.Raycaster();
