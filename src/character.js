@@ -1,42 +1,68 @@
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import gsap from 'gsap';
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export function loadCharacter(scene) {
-    // Créer le loader
     const loader = new GLTFLoader();
 
-    // Charger le modèle
-    loader.load(
-        '/model/character.glb',
+    loader.load('/model/character.glb', (gltf) => {
+        const fox = gltf.scene;
 
-        // Succès
-        (gltf) => {
-            const character = gltf.scene;
-            // Il sera en bas au centre de l'écran
-            character.position.set(
-            0,
-            -2,
-            2
-        );
-            character.scale.set(
-            0.02,
-            0.02,
-            0.02
-        );
-            scene.add(character);
+        fox.scale.set(0.05, 0.05, 0.05);
+        fox.position.set(-6, -10, 1);
+        fox.rotation.y = Math.PI / 4;
 
-            console.log('Renard chargé !');
-        },
+        scene.add(fox);
 
-        // Progression
-        (progress) => {
-            const percent = (progress.loaded / progress.total) * 100;
-            console.log(`Chargement: ${percent.toFixed(0)}%`);
-        },
+        // ANIMATION SPECTACULAIRE
+        const timeline = gsap.timeline();
 
-        // Erreur
-        (error) => {
-            console.error('Erreur:', error);
-        }
-    );
+        timeline
+            .to(fox.position, {
+                y: -3.5,
+                x: -6,
+                duration: 1,
+                ease: "bounce.out"
+            })
+            .to(fox.rotation, {
+                y: Math.PI / 2,
+                duration: 0.8,
+                ease: "power2.out"
+            }, 0)
+            // Rebond
+            .to(fox.position, {
+                y: -3,
+                duration: 0.6,
+                ease: "bounce.out"
+            })
+            // Se stabilise
+            .to(fox.position, {
+                x: -6,
+                duration: 0.5,
+                ease: "power2.inOut"
+            });
+
+        // Message bienvenue (après 0.5s)
+        setTimeout(() => {
+            showWelcomeMessage();
+        }, 500);
+    });
+}
+
+function showWelcomeMessage() {
+    const message = document.getElementById('welcome-message');
+
+    gsap.timeline()
+        .to(message, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.5,
+            ease: "back.out(1.7)"
+        })
+        .to(message, {
+            opacity: 0,
+            scale: 0.8,
+            duration: 0.5,
+            delay: 2
+        });
 }

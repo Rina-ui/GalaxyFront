@@ -1,17 +1,34 @@
-html, body {
+* {
   margin: 0;
   padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
+  box-sizing: border-box;
 }
 
-#app {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+body {
+  overflow: hidden;
+  background: radial-gradient(circle at top, #1b1f3b, #050714);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+canvas {
   display: block;
+}
+
+.ui {
+  position: absolute;
+  top: 2rem;
+  width: 100%;
+  text-align: center;
+  color: white;
+  pointer-events: none;
+}
+
+.ui h1 {
+  font-size: 2.2rem;
+  font-weight: 600;
+}
+
+.ui p {
+  opacity: 0.6;
+  margin-top: 0.5rem;
 }
